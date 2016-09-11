@@ -1,0 +1,89 @@
+body{
+    margin: 0;
+    font-size: 12px;
+}
+
+.l-page{
+    widh: 100%;
+    min-width: 320px;
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    background-size: cover;
+}
+
+.leftFloat{
+    float: left;
+}
+
+ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul li{
+    height: 120px;
+    border: 1px solid #dedede;
+    border-top: none;
+}
+
+li.loading{
+    background: #dedede;
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+}
+
+li.space{
+    background: transparent;
+    height: 40px;
+    border: none;
+}
+
+.pic-wrap{
+    width: 40%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.pic-wrap img{
+    width: 100%;
+    height: 100%;
+}
+
+.info-wrap{
+    width: 60%;
+    overflow: hidden;
+}
+
+.info-wrap span{
+    margin-left: 10px;
+}
+
+.info-wrap .info-name{
+    line-height: 40px;
+}
+
+.info-wrap .info-address{
+    line-height: 40px;
+}
+
+.info-wrap .info-bottom{
+    line-height: 40px;
+}
+
+.info-wrap .info-bottom .info-price{
+    width: 20%;
+}
+
+.info-wrap .info-bottom .inf-star{
+    width: 20%;
+}
+
+.info-wrap .info-bottom .info-more{
+    width: 60%;
+    text-align: right;
+    font-style: italic;
+    color: #bebebe;
+}

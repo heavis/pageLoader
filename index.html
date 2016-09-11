@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>无限分页</title>
+    <link rel="stylesheet" href="assets/css/index.css"/>
+</head>
+<body>
+<div class="l-page">
+    <ul id="list" class="list">
+    </ul>
+</div>
+<script src="//cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+<script src="js/jquery.mockjax.js"></script>
+<script type="text/javascript" src="js/dataMock.js"></script>
+<script type="text/javascript">
+    //作为一个对象的w和h属性返回视口的尺寸
+    function getViewportSize(w){
+        //使用指定的窗口， 如果不带参数则使用当前窗口
+        w = w || window;
+
+        //除了IE8及更早的版本以外，其他浏览器都能用
+        if(w.innerWidth != null)
+            return {w: w.innerWidth, h: w.innerHeight};
+
+        //对标准模式下的IE（或任意浏览器）
+        var d = w.document;
+        if(document.compatMode == "CSS1Compat")
+            return {w: d.documentElement.clientWidth, h: d.documentElement.clientHeight};
+
+        //对怪异模式下的浏览器
+        return {w: d.body.clientWidth, h: d.body.clientHeight};
+    }
+
+    //检测滚动条是否滚动到页面底部
+    function isScrollToPageBottom(){
+        //文档高度
+        var documentHeight = document.documentElement.offsetHeight;
+        var viewPortHeight = getViewportSize().h;
+        var scrollHeight = window.pageYOffset ||
+                document.documentElement.scrollTop ||
+                document.body.scrollTop || 0;
+
+        return documentHeight - viewPortHeight - scrollHeight < 20;
+    }
+
+    //商品模板
+    function getGoodsTemplate(goods){
+        return "<li>" +
+                "<div class='pic-wrap leftFloat'>" +
+                "<img src='" + goods.pic + "'>" +
+                "</div>" +
+                "<div class='info-wrap leftFloat'>" +
+                "<div class='info-name'><span>" + goods.name + "</span></div>" +
+                "<div class='info-address'><span>" +　goods.address +"</span></div>" +
+                "<div class='info-bottom'>" +
+                "<div class='info-price leftFloat'><span>￥" + goods.price + "</span></div>" +
+                "<div class='info-star leftFloat'><span>" + goods.star + "人推荐</span></div>" +
+                "<div class='info-more leftFloat'><span>更多信息</span></div>" +
+                "</div>" +
+                "</div>" +
+                "</li>";
+    }
+
+    //初始化的时候默给list加载100条数据
+    $.ajax("http://localhost:8800/loadData?sessionId=" + (+ new Date)).done(function(result){
+        if(result.status){
+            var html = "";
+            result.data.forEach(function(goods){
+                html += getGoodsTemplate(goods);
+            });
+            $("#list").append(html);
+        }
+    });
+
+
+    //加载数据
+    function loadDataDynamic(){
+        //先显示正在加载中
+        if( $("#loadingLi").length === 0)
+             $("#list").append("<li id='loadingLi' class='loading'>正在加载...</li>");
+        else{
+            $("#loadingLi").text("正在加载...").removeClass("space");
+        }
+        var loadingLi = document.getElementById("loadingLi");
+        loadingLi.scrollIntoView();
+        //加载数据,数据加载完成后需要移除加载提示
+        var hasData = false, msg = "";
+        $.ajax("http://localhost:8800/loadData?sessionId=" + (+ new Date)).done(function(result){
+             if(result.status){
+                if(result.data.length > 0){
+                    hasData = true;
+                    var html = "";
+                    result.data.forEach(function(goods){
+                        html += getGoodsTemplate(goods);
+                    });
+                    $("#list").append(html);
+                }else{
+                    msg = "数据已加载到底了"
+                }
+            }
+             $("#list").append(loadingLi);
+        }).fail(function(){
+            msg = "数据加载失败!";
+         }).always(function(){
+            !hasData && setTimeout(function(){
+                $(document.body).scrollTop(document.body.scrollTop -40);
+            }, 500);
+                msg && $("#loadingLi").text(msg);
+            //重新监听滚动
+            setTimeout(watchScroll, 900);
+         });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //如果滚动条滚动到页面底部，需要加载新的数据,并且显示加载提示
+    function watchScroll(){
+        if(!isScrollToPageBottom()){
+            setTimeout( arguments.callee, 900);
+            return;            }
+        loadDataDynamic();
+    }
+
+
+    //开始检测滚动条
+    watchScroll();
+
+    //参考：http://www.cnblogs.com/xing901022/p/5052780.html
+</script>
+</body>
+</html>
